@@ -17,6 +17,14 @@ namespace Assets.KsCode.CakeBehaviour {
             onDisable = new();
             onDestroy = new();
         }
+        public void AddSlice(MBSlice slice) {
+            awake.Task += slice.awake;
+            onValidate.Task += slice.onValidate;
+            onEnable.Task += slice.onEnable;
+            start.Task += slice.start;
+            onDisable.Task += slice.onDisable;
+            onDestroy.Task += slice.onDestroy;
+        }
 
         #region Initialize with [var = optional]
         // public MBCake(
@@ -33,14 +41,15 @@ namespace Assets.KsCode.CakeBehaviour {
         //     this.onDisable = new(OnDisable);
         //     this.onDestroy = new(OnDestroy);
         // }
-        public MBCake(MBSlice firstSlice) {
-            this.awake = new(firstSlice.awake);
-            this.onValidate = new(firstSlice.onValidate);
-            this.onEnable = new(firstSlice.onEnable);
-            this.start = new(firstSlice.start);
-            this.onDisable = new(firstSlice.onDisable);
-            this.onDestroy = new(firstSlice.onDestroy);
-        }
+        public MBCake(MBSlice firstSlice) => new MBCake().AddSlice(firstSlice);
+        // {
+        //     this.awake = new(firstSlice.awake);
+        //     this.onValidate = new(firstSlice.onValidate);
+        //     this.onEnable = new(firstSlice.onEnable);
+        //     this.start = new(firstSlice.start);
+        //     this.onDisable = new(firstSlice.onDisable);
+        //     this.onDestroy = new(firstSlice.onDestroy);
+        // }
         #endregion Initialize with [var = optional]
         #region Initialize with func.chain
         // public MBCake Awake(Func<bool> func) { awake.Task += func; return this; }
@@ -124,5 +133,4 @@ namespace Assets.KsCode.CakeBehaviour {
         public static implicit operator SliceAction(Action func) => new(func);
         public static implicit operator Func<bool>(SliceAction action) => action.m_Action;
     }
-    public delegate Func<bool> SliceStep(Func<bool> func);
 }
