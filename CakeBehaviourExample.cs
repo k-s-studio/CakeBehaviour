@@ -7,22 +7,25 @@ public class CakeBehaviourExample : CakeBehaviour {
     public string elfName;
     [NonSerialized] public GameObject CakeElf;
     protected override void Init() {
-        Cake += () => new MBSlice();
+        // Cake += (o) => MBSlice.New.
+        //     Awake(() => CakeElf = new("CakeElf")).
+        //     OnValidate(() => CakeElf.name = elfName).
+        //     OnDestroy(() => DestroyImmediate(CakeElf));
+        //宣告方法內可以引用非靜態變數
     }
-    // MBSlice ControlElfName = new MBSlice().
-    // Awake(
-    //    () => { CakeElf = new("CakeElf"); }
-    // ).
-    // Start(
-    //     //this.MyFunc()
-    // );
+    // 宣告新變數時無法引用非靜態變數
+    // MBSlice ControlElfName = MBSlice.New.
+    //     Awake(() => CakeElf = new("CakeElf"));
 
-    bool MyFunc() {
-        bool flagA, flagB;
-        void A(bool flag) => flagA = flag;
-        void B(bool flag) => flagB = flag;
-        A(true);
-        B(false);
-        return flagA && flagB;
-    }
+    MBSlice ControlElf() => Slice.
+        Awake(() => CakeElf = new("CakeElf")).
+        Start(() => Debug.Log($"Hi! My name is {elfName}")).
+        OnValidate(() => CakeElf.name = elfName).
+        OnDestroy(() => DestroyImmediate(CakeElf));
+
+    MBSlice ControlElf2() => MBSlice.New.
+        Awake(() => CakeElf = new("CakeElf")).
+        Start(() => Debug.Log($"Hi! My name is {elfName}")).
+        OnValidate(() => CakeElf.name = elfName).
+        OnDestroy(() => DestroyImmediate(CakeElf));
 }

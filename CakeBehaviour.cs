@@ -9,9 +9,10 @@ namespace Assets.KsCode.CakeBehaviour {
             set => cake.AddSlice(value);
         }
         protected event SliceDelegate Cake {
-            add => cake.AddSlice(value.Invoke());
+            add => cake.AddSlice(value.Invoke(this));
             remove { }
         }
+        protected MBSlice Slice;
         protected abstract void Init();
         protected virtual void Awake() {
             Init();
@@ -23,5 +24,5 @@ namespace Assets.KsCode.CakeBehaviour {
         protected virtual void OnDisable() => cake.onDisable.Execute();
         protected virtual void OnDestroy() => cake.onDestroy.Execute();
     }
-    public delegate MBSlice SliceDelegate();
+    public delegate MBSlice SliceDelegate(CakeBehaviour cb);
 }
