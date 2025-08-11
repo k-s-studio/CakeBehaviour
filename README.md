@@ -1,0 +1,1 @@
+A tiny frame used in Unity C# developement to design MonoBehaviour scripts by way of vertical-intergration between Unity Messages.
