@@ -26,7 +26,7 @@ public class MBCakeExample : MonoBehaviour {
                 Debug.Log("OnValidate2!!!!");
             });
     }
-    
+
     private readonly MBCake cake2 = new MBSlice() {
         awake = new(() => { }),
         onValidate = new(() => { }),
