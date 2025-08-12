@@ -15,9 +15,9 @@ namespace Assets.KsCode.CakeBehaviour {
         //     remove { }
         // }
         protected MBSlice Add => new(cake);
-        protected abstract void Init();
+        protected abstract void Assemble();
         protected virtual void Awake() {
-            Init();
+            Assemble();
             cake.awake.Execute();
         }
         protected virtual void OnValidate() => cake.onValidate.Execute();

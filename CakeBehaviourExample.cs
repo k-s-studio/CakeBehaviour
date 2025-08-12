@@ -9,7 +9,7 @@ public class CakeBehaviourExample : CakeBehaviour {
     public string elf2Name;
     private readonly Diag.Stopwatch stopwatch = new();
     [NonSerialized] public GameObject[] CakeElf = { null, null };
-    protected override void Init() {
+    protected override void Assemble() {
         LogBegin();
         ControlElf();
         ControlElf2();
@@ -49,7 +49,7 @@ public class CakeBehaviourExample : CakeBehaviour {
         Start(() => Debug.Log($"Hi! My name is {CakeElf[1].name}")).
         OnValidate(() => CakeElf[1].name = elf2Name).
         OnDestroy(() => DestroyImmediate(CakeElf[1]));
-        
+
     protected override void Awake() {
         stopwatch.Restart();
         base.Awake();

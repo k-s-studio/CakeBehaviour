@@ -17,6 +17,7 @@ namespace Assets.KsCode.CakeBehaviour {
             onDisable = new();
             onDestroy = new();
         }
+        public MBSlice Add => new(this);
     }
     public class MessageLayer {
         public event Func<Arg> Task;
