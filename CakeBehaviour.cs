@@ -4,15 +4,17 @@ using Assets.KsCode.CakeBehaviour;
 namespace Assets.KsCode.CakeBehaviour {
     // This namespace is intended for cake-related behaviors in the game.
     public abstract class CakeBehaviour : MonoBehaviour {
-        protected readonly MBCake cake = MBCake.New;
-        protected MBSlice AddSlice {
-            set => cake.AddSlice(value);
-        }
-        protected event SliceDelegate Cake {
-            add => cake.AddSlice(value.Invoke(this));
-            remove { }
-        }
-        protected MBSlice Slice;
+        protected const MessageLayer.Arg END = MessageLayer.Arg.END;
+        protected const MessageLayer.Arg CONTI = MessageLayer.Arg.CONTI;
+        protected readonly MBCake cake = new();
+        // protected MBSlice AddSlice {
+        //     set => cake.AddSlice(value);
+        // }
+        // protected event SliceDelegate Cake {
+        //     add => cake.AddSlice(value.Invoke(this));
+        //     remove { }
+        // }
+        protected MBSlice Add => new(cake);
         protected abstract void Init();
         protected virtual void Awake() {
             Init();

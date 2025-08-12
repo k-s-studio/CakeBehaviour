@@ -17,120 +17,44 @@ namespace Assets.KsCode.CakeBehaviour {
             onDisable = new();
             onDestroy = new();
         }
-        public void AddSlice(MBSlice slice) {
-            awake.Task += slice.awake;
-            onValidate.Task += slice.onValidate;
-            onEnable.Task += slice.onEnable;
-            start.Task += slice.start;
-            onDisable.Task += slice.onDisable;
-            onDestroy.Task += slice.onDestroy;
-        }
-
-        #region Initialize with [var = optional]
-        // public MBCake(
-        //     SliceAction Awake = null,
-        //     SliceAction OnValidate = null,
-        //     SliceAction OnEnable = null,
-        //     SliceAction Start = null,
-        //     SliceAction OnDisable = null,
-        //     SliceAction OnDestroy = null) {
-        //     this.awake = new(Awake);
-        //     this.onValidate = new(OnValidate);
-        //     this.onEnable = new(OnEnable);
-        //     this.start = new(Start);
-        //     this.onDisable = new(OnDisable);
-        //     this.onDestroy = new(OnDestroy);
-        // }
-        public MBCake(MBSlice firstSlice) => new MBCake().AddSlice(firstSlice);
-        // {
-        //     this.awake = new(firstSlice.awake);
-        //     this.onValidate = new(firstSlice.onValidate);
-        //     this.onEnable = new(firstSlice.onEnable);
-        //     this.start = new(firstSlice.start);
-        //     this.onDisable = new(firstSlice.onDisable);
-        //     this.onDestroy = new(firstSlice.onDestroy);
-        // }
-        #endregion Initialize with [var = optional]
-        #region Initialize with func.chain
-        // public MBCake Awake(Func<bool> func) { awake.Task += func; return this; }
-        // public MBCake Awake(Action func) => Awake((SliceAction)func);
-        // public MBCake OnValidate(Func<bool> func) { onValidate.Task += func; return this; }
-        // public MBCake OnValidate(Action func) => OnValidate((SliceAction)func);
-        // public MBCake OnEnable(Func<bool> func) { onEnable.Task += func; return this; }
-        // public MBCake OnEnable(Action func) => OnEnable((SliceAction)func);
-        // public MBCake Start(Func<bool> func) { start.Task += func; return this; }
-        // public MBCake Start(Action func) => Start((SliceAction)func);
-        // public MBCake OnDisable(Func<bool> func) { onDisable.Task += func; return this; }
-        // public MBCake OnDisable(Action func) => OnDisable((SliceAction)func);
-        // public MBCake OnDestroy(Func<bool> func) { onDestroy.Task += func; return this; }
-        // public MBCake OnDestroy(Action func) => OnDestroy((SliceAction)func);
-        #endregion Initialize with func.chain
-        public static MBSlice New => default; //start with a slice
-        public static MBCake operator +(MBCake a, MBSlice b) {
-            a.awake.Task += b.awake;
-            a.onValidate.Task += b.onValidate;
-            a.onEnable.Task += b.onEnable;
-            a.start.Task += b.start;
-            a.onDisable.Task += b.onDisable;
-            a.onDestroy.Task += b.onDestroy;
-            return a;
-        }
-        public static implicit operator MBCake(MBSlice slice) => new(slice);
     }
-
     public class MessageLayer {
-        public event Func<bool> Task;
+        public event Func<Arg> Task;
         public void Execute() {
             if (Task == null) return;
-            foreach (Func<bool> func in Task.GetInvocationList().Cast<Func<bool>>())
-                if (func.Invoke() == true) return;
+            foreach (Func<Arg> func in Task.GetInvocationList().Cast<Func<Arg>>())
+                if (func.Invoke() == Arg.END) return;
         }
         public MessageLayer() { Task = default; }
         public MessageLayer(SliceAction task) => Task = task;
-        public static implicit operator MessageLayer(Func<bool> func) => new(func);
+        public static implicit operator MessageLayer(Func<Arg> func) => new(func);
         public static implicit operator MessageLayer(Action func) => new(func);
+        public enum Arg { END = 0, CONTI = 1 }
     }
     public struct MBSlice {
-        public SliceAction awake;
-        public SliceAction onValidate;
-        public SliceAction onEnable;
-        public SliceAction start;
-        public SliceAction onDisable;
-        public SliceAction onDestroy;
-        public MBSlice Awake(Func<bool> func) { awake = func; return this; }
-        public MBSlice Awake(Action func) => Awake((SliceAction)func);
-        public MBSlice OnValidate(Func<bool> func) { onValidate = func; return this; }
-        public MBSlice OnValidate(Action func) => OnValidate((SliceAction)func);
-        public MBSlice OnEnable(Func<bool> func) { onEnable = func; return this; }
-        public MBSlice OnEnable(Action func) => OnEnable((SliceAction)func);
-        public MBSlice Start(Func<bool> func) { start = func; return this; }
-        public MBSlice Start(Action func) => Start((SliceAction)func);
-        public MBSlice OnDisable(Func<bool> func) { onDisable = func; return this; }
-        public MBSlice OnDisable(Action func) => OnDisable((SliceAction)func);
-        public MBSlice OnDestroy(Func<bool> func) { onDestroy = func; return this; }
-        public MBSlice OnDestroy(Action func) => OnDestroy((SliceAction)func);
-        public static MBSlice New => default;
-        //operator(s?)
-        public static MBSlice operator +(MBSlice a, MBSlice b) {
-            return new MBSlice {
-                awake = a.awake + b.awake,
-                onValidate = a.onValidate + b.onValidate,
-                onEnable = a.onEnable + b.onEnable,
-                start = a.start + b.start,
-                onDisable = a.onDisable + b.onDisable,
-                onDestroy = a.onDestroy + b.onDestroy
-            };
-        }
+        private MBCake m_MBCake;
+        public readonly MBSlice Awake(Func<MessageLayer.Arg> func) { m_MBCake.awake.Task += func; return this; }
+        public readonly MBSlice Awake(Action func) => Awake((SliceAction)func);
+        public readonly MBSlice OnValidate(Func<MessageLayer.Arg> func) { m_MBCake.onValidate.Task += func; return this; }
+        public readonly MBSlice OnValidate(Action func) => OnValidate((SliceAction)func);
+        public readonly MBSlice OnEnable(Func<MessageLayer.Arg> func) { m_MBCake.onEnable.Task += func; return this; }
+        public readonly MBSlice OnEnable(Action func) => OnEnable((SliceAction)func);
+        public readonly MBSlice Start(Func<MessageLayer.Arg> func) { m_MBCake.start.Task += func; return this; }
+        public readonly MBSlice Start(Action func) => Start((SliceAction)func);
+        public readonly MBSlice OnDisable(Func<MessageLayer.Arg> func) { m_MBCake.onDisable.Task += func; return this; }
+        public readonly MBSlice OnDisable(Action func) => OnDisable((SliceAction)func);
+        public readonly MBSlice OnDestroy(Func<MessageLayer.Arg> func) { m_MBCake.onDestroy.Task += func; return this; }
+        public readonly MBSlice OnDestroy(Action func) => OnDestroy((SliceAction)func);
+        public MBSlice(MBCake ofCake) => m_MBCake = ofCake;
     }
     public readonly struct SliceAction {
-        private readonly Func<bool> m_Action;
-        public SliceAction(Func<bool> action) => m_Action = action;
-        public SliceAction(Action action) => m_Action = () => { action(); return false; };
-        public static SliceAction Empty => new();
+        private readonly Func<MessageLayer.Arg> m_Action;
+        public SliceAction(Func<MessageLayer.Arg> action) => m_Action = action;
+        public SliceAction(Action action) => m_Action = () => { action(); return MessageLayer.Arg.CONTI; };
 
         public static SliceAction operator +(SliceAction a, SliceAction b) => new(a.m_Action + b.m_Action);
-        public static implicit operator SliceAction(Func<bool> func) => new(func);
+        public static implicit operator SliceAction(Func<MessageLayer.Arg> func) => new(func);
         public static implicit operator SliceAction(Action func) => new(func);
-        public static implicit operator Func<bool>(SliceAction action) => action.m_Action;
+        public static implicit operator Func<MessageLayer.Arg>(SliceAction action) => action.m_Action;
     }
 }
