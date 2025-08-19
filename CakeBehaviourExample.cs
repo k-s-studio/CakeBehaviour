@@ -1,5 +1,5 @@
 using System;
-using Diag = System.Diagnostics;
+using Stopwatch = System.Diagnostics.Stopwatch;
 using UnityEngine;
 using Assets.KsCode.CakeBehaviour;
 
@@ -7,7 +7,7 @@ using Assets.KsCode.CakeBehaviour;
 public class CakeBehaviourExample : CakeBehaviour {
     public string elf1Name;
     public string elf2Name;
-    private readonly Diag.Stopwatch stopwatch = new();
+    private readonly Stopwatch stopwatch = new();
     [NonSerialized] public GameObject[] CakeElf = { null, null };
     protected override void Assemble() {
         LogBegin();

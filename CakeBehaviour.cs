@@ -7,19 +7,14 @@ namespace Assets.KsCode.CakeBehaviour {
         protected const MessageLayer.Arg END = MessageLayer.Arg.END;
         protected const MessageLayer.Arg CONTI = MessageLayer.Arg.CONTI;
         protected readonly MBCake cake = new();
-        // protected MBSlice AddSlice {
-        //     set => cake.AddSlice(value);
-        // }
-        // protected event SliceDelegate Cake {
-        //     add => cake.AddSlice(value.Invoke(this));
-        //     remove { }
-        // }
+
         protected MBSlice Add => new(cake);
         protected abstract void Assemble();
         protected virtual void Awake() {
             Assemble();
             cake.awake.Execute();
         }
+
         protected virtual void OnValidate() => cake.onValidate.Execute();
         protected virtual void OnEnable() => cake.onEnable.Execute();
         protected virtual void Start() => cake.start.Execute();

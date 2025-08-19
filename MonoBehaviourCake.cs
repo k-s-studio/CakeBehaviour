@@ -32,8 +32,8 @@ namespace Assets.KsCode.CakeBehaviour {
         public static implicit operator MessageLayer(Action func) => new(func);
         public enum Arg { END = 0, CONTI = 1 }
     }
-    public struct MBSlice {
-        private MBCake m_MBCake;
+    public readonly struct MBSlice {
+        private readonly MBCake m_MBCake;
         public readonly MBSlice Awake(Func<MessageLayer.Arg> func) { m_MBCake.awake.Task += func; return this; }
         public readonly MBSlice Awake(Action func) => Awake((SliceAction)func);
         public readonly MBSlice OnValidate(Func<MessageLayer.Arg> func) { m_MBCake.onValidate.Task += func; return this; }
